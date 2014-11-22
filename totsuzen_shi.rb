@@ -1,13 +1,15 @@
-require 'pebbles/suddenly_death_string'
+require 'serialport'
 
 module Lita
   module Handlers
     class Suddenly < Handler
-      route /^suddenly\s+(\S.*)+/, :suddenly_death
+      route /^temp$/, :suddenly_death
 
       def suddenly_death(response)
-        word = response.matches[0][0]
-        response.reply word.to_suddenly_death
+        sp = SerialPort.new('/dev/tty.usbmodem1.1', 9600, 8, 1, 0) 
+        sp.puts "1"
+        line = sp.gets # read
+        response.reply line
       end
     end
     Lita.register_handler(Suddenly)

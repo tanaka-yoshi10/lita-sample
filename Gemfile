@@ -13,4 +13,4 @@ gem "lita"
 # gem "lita-google-images"
 # gem "lita-karma"
 gem 'lita-idobata'
-gem 'pebbles-suddenly_death_string'
+gem 'serialport'
