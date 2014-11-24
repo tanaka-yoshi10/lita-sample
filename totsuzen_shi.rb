@@ -10,37 +10,43 @@ module Lita
       route /^light on$/, :light_on
       route /^light off$/, :light_off
 
-      def temparature(response)
+      def openWrbb
         sp = SerialPort.new(DEVICE, 9600, 8, 1, 0) 
-        sp.puts "t"
-        line = sp.gets # read
+        yield sp
+      end
+
+      def temparature(response)
+        line = openWrbb do |sp|
+          sp.puts "t"
+          sp.gets
+        end
         response.reply line
       end
 
       def light_status(response)
-        sp = SerialPort.new(DEVICE, 9600, 8, 1, 0) 
-        sp.puts "l"
-        line = sp.gets # read
+        line = openWrbb do |sp|
+          sp.puts "l"
+          sp.gets
+        end
         response.reply line
       end
 
       def light_on(response)
-        sp = SerialPort.new(DEVICE, 9600, 8, 1, 0) 
-        sp.puts "1"
+        openWrbb {|sp| sp.puts "1"}
         response.reply "light on"
       end
 
       def light_off(response)
-        sp = SerialPort.new(DEVICE, 9600, 8, 1, 0) 
-        sp.puts "0"
+        openWrbb {|sp| sp.puts "0"}
         response.reply "light off"
       end
 
       def reminder(response)
         every(10) do |timer|
-          sp = SerialPort.new(DEVICE, 9600, 8, 1, 0) 
-          sp.puts "t"
-          line = sp.gets # read
+          line = openWrbb do |sp|
+            sp.puts "t"
+            sp.gets
+          end
           response.reply line + "by timer"
         end
       end
