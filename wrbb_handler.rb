@@ -9,6 +9,8 @@ module Lita
       route /^light status$/, :light_status
       route /^light on$/, :light_on
       route /^light off$/, :light_off
+      route /^tap on$/, :tap_on
+      route /^tap off$/, :tap_off
 
       def openWrbb
         sp = SerialPort.new(DEVICE, 9600, 8, 1, 0) 
@@ -39,6 +41,16 @@ module Lita
       def light_off(response)
         openWrbb {|sp| sp.puts "0"}
         response.reply "light off"
+      end
+
+      def tap_on(response)
+        openWrbb {|sp| sp.puts "w1,97,26,26,8,8,8,8,8,18,8,18,8,18,8,18,8,8,8,8,8,30,26,26,8,8,8,8,8,18,8,18,8,18,8,18,8,8,8,8,8,28,26,26,9,8,8,8,8,18,8,18,8,18,8,18,8,8,8,8,8,0W"}
+        response.reply "tap on"
+      end
+
+      def tap_off(response)
+        openWrbb {|sp| sp.puts "w26,26,8,8,8,18,8,8,8,8,8,18,8,8,8,18,8,18,8,30,26,26,8,8,8,18,8,8,8,8,8,18,8,8,8,18,8,18,8,28,26,26,8,8,8,18,8,8,8,8,8,18,8,8,8,18,8,18,8,28,26,26,8,8,8,18,8,8,8,8,8,18,8,8,8,18,8,18,8,111,1,172,26,26,8,8,8,18,8,8,8,8,8,18,8,8,8,18,8,18,8,28,26,26,8,8,8,18,8,8,8,8,8,18,8,8,8,18,8,18,8,0W"}
+        response.reply "tap off"
       end
 
       def reminder(response)
